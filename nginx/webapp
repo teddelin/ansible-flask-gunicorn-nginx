@@ -1,0 +1,9 @@
+server {
+    listen 80;
+    server_name 192.168.2.196;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:{{ PROJECT_HOME }}/webapp.sock;
+    }
+}

@@ -1,0 +1,8 @@
+[web]
+web1
+
+[test]
+web1
+
+[web:vars]
+ansible_python_interpreter=/usr/bin/python3
