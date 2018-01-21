@@ -13,7 +13,7 @@ A simple flask app structure with a possibility to grow but I would not recommen
 ## Postgres
 Creating an instance of postgres that allows any ip to connect to the test user and database.
 
-## Version 2
+### Version 2
 - Found a new way of structuring the who project which has helped a lot with maintaining and developing it.
 - Added a database.
 - TODO: Make everything more dynamic.
