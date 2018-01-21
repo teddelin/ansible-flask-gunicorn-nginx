@@ -1,0 +1,7 @@
+---
+- hosts: web
+  vars_files:
+    - webapp/vars/main.yaml 
+  remote_user: "{{ USER }}"
+  roles:
+    - webapp

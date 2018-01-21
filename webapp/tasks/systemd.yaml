@@ -1,0 +1,15 @@
+---
+- name: Copy Systemd files
+  template:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system"
+  with_fileglob:
+    - "{{ LOCAL_SYSTEMD_HOME }}/*"
+
+- name: Start Webapp
+  become: yes
+  systemd:
+    name: webapp
+    enabled: yes
+    state: restarted
+    daemon_reload: yes

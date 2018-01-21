@@ -1,0 +1,26 @@
+---
+- name: Setup Nginx
+  package:
+    name: nginx
+    state: present
+
+- name: Copy Nginx files
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/sites-available"
+  with_fileglob:
+    - "{{ LOCAL_NGINX_HOME }}/*"
+
+- name: Create symlink for nginx
+  file:
+    src: /etc/nginx/sites-available/webapp
+    dest: /etc/nginx/sites-enabled/webapp
+    state: link
+
+- name: Restart Nginx
+  become: yes
+  systemd:
+    name: nginx
+    enabled: yes
+    state: restarted
+    daemon_reload: yes

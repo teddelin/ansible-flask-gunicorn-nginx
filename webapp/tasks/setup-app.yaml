@@ -1,0 +1,61 @@
+---
+- name: Create app directory
+  file:
+    path: "{{ PROJECT_HOME }}"
+    state: directory
+    owner: "{{ USER }}"
+
+- name: Create templates directory
+  file:
+    path: "{{ PROJECT_HOME }}/templates"
+    state: directory
+    owner: "{{ USER }}"
+
+- name: Create main directory
+  file:
+    path: "{{ PROJECT_HOME }}/main"
+    state: directory
+    owner: "{{ USER }}"
+
+- name: Copy app to directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ PROJECT_HOME }}"
+    owner: "{{ USER }}"
+  with_fileglob:
+    - "{{ LOCAL_PROJECT_HOME }}/*"
+
+- name: Copy templates to directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ PROJECT_HOME }}/templates"
+    owner: "{{ USER }}"
+  with_fileglob:
+    - "{{ LOCAL_PROJECT_HOME }}/templates/*"
+
+- name: Copy templates to directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ PROJECT_HOME }}/main"
+    owner: "{{ USER }}"
+  with_fileglob:
+    - "{{ LOCAL_PROJECT_HOME }}/main/*"
+
+- name: Install pip
+  package:
+    name: python-pip
+    state: latest
+
+- name: Install virtualenv
+  package:
+    name: virtualenv
+
+- name: Create virtualenv for project
+  shell: virtualenv "{{ PROJECT_HOME }}/venv"
+         creates="{{ PROJECT_HOME }}/venv/bin/activate"
+
+- name: Install Flask in the virtualenv
+  become: yes
+  pip:
+    requirements: "{{ PROJECT_HOME }}/requirements.txt"
+    virtualenv: "{{ PROJECT_HOME }}/venv"

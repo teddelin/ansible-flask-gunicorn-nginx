@@ -1,0 +1,10 @@
+---
+
+- name: Configure Postgres
+  become: yes
+  template:
+    src: "{{ item }}"
+    dest: "{{ postgres_conf_directory }}/{{ item }}"
+  with_items:
+    - postgresql.conf
+    - pg_hba.conf

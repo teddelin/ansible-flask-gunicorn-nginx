@@ -1,8 +1,14 @@
 [web]
 web1
 
+[db]
+db1
+
 [test]
 web1
 
 [web:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+[db:vars]
 ansible_python_interpreter=/usr/bin/python3

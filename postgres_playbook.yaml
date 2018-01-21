@@ -1,0 +1,11 @@
+---
+
+- name: Create Postgres DB server
+  hosts: db
+  become: yes
+  remote_user: ted
+  vars_files:
+    - postgres/vars/main.yaml
+
+  roles:
+    - postgres
