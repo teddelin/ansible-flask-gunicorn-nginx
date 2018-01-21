@@ -11,34 +11,61 @@
   remote_user: "{{ USER }}"
   tasks:
     - name: Create app directory
-      file: path={{ PROJECT_HOME }} state=directory owner={{ USER }} group=www-data
+      file: 
+        path: "{{ PROJECT_HOME }}"
+        state: directory 
+        owner: "{{ USER }}"
+        group: www-data
 
     - name: Create templates directory
-      file: path={{ PROJECT_HOME }}/templates state=directory owner={{ USER }} group=www-data
+      file: 
+        path: "{{ PROJECT_HOME }}/templates"
+        state: directory 
+        owner: "{{ USER }}"
+        group: www-data
 
     - name: Create main directory
-      file: path={{ PROJECT_HOME }}/main state=directory owner={{ USER }} group=www-data
+      file: 
+        path: "{{ PROJECT_HOME }}/main"
+        state: directory 
+        owner: "{{ USER }}"
+        group: www-data
 
     - name: Copy app to directory
-      copy: src={{ item }} dest={{ PROJECT_HOME }} owner={{ USER }} group=www-data
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ PROJECT_HOME }}"
+        owner: "{{ USER }}"
+        group: www-data
       with_fileglob:
         - "{{ LOCAL_PROJECT_HOME }}/*"
 
     - name: Copy templates to directory
-      copy: src={{ item }} dest={{ PROJECT_HOME }}/templates owner={{ USER }} group=www-data
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ PROJECT_HOME }}/templates"
+        owner: "{{ USER }}"
+        group: www-data
       with_fileglob:
         - "{{ LOCAL_PROJECT_HOME }}/templates/*"
 
     - name: Copy templates to directory
-      copy: src={{ item }} dest={{ PROJECT_HOME }}/main owner={{ USER }} group=www-data
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ PROJECT_HOME }}/main"
+        owner: "{{ USER }}"
+        group: www-data
       with_fileglob:
         - "{{ LOCAL_PROJECT_HOME }}/main/*"
 
     - name: Install pip
-      apt: name=python-pip state=latest
+      package: 
+        name: python-pip 
+        state: latest
 
     - name: Install virtualenv
-      apt: name=virtualenv
+      package: 
+        name: virtualenv
 
     - name: Create virtualenv for project
       shell: virtualenv "{{ PROJECT_HOME }}/venv"
@@ -50,18 +77,21 @@
         virtualenv: "{{ PROJECT_HOME }}/venv"
 
     - name: Copy Systemd files
-      template: src={{ item }} dest="/etc/systemd/system"
+      template: 
+        src: "{{ item }}"
+        dest: "/etc/systemd/system"
       with_fileglob:
         - "{{ LOCAL_SYSTEMD_HOME }}/*"
 
-    - name: Reload systemd after adding systemd file
-      systemd: daemon_reload=yes
-
     - name: Setup Nginx
-      apt: name=nginx state=present update_cache=true
+      package: 
+        name: nginx 
+        state: present 
 
     - name: Copy Nginx files
-      template: src={{ item }} dest="/etc/nginx/sites-available"
+      template: 
+        src: "{{ item }}"
+        dest: "/etc/nginx/sites-available"
       with_fileglob:
         - "{{ LOCAL_NGINX_HOME }}/*"
 
@@ -72,11 +102,17 @@
         state: link
 
     - name: Restart Nginx
+      become: yes
       systemd:
         name: nginx
+        enabled: yes
         state: restarted
+        daemon_reload: yes
 
     - name: Start Webapp
+      become: yes
       systemd:
         name: webapp
+        enabled: yes
         state: restarted
+        daemon_reload: yes
